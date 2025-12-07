@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
-import './styles/Header.css';
+import styles from './styles/Header.module.css';
 
 const Header = () => {
   return (
-    <header className="headerContainer">
-      <div className="nav-inner">
-        <div className="logo">
-          <div className="logo-badge">🇺🇸</div>
+    <header className={styles.headerContainer}>
+      <div className={styles.navInner}>
+        <div className={styles.logo}>
+          <div className={styles.logoBadge}>🇺🇸</div>
           <div>
             <div>O MÍNIMO</div>
             <div
@@ -21,13 +21,13 @@ const Header = () => {
           </div>
         </div>
 
-        <div className="nav-links">
+        <div className={styles.navLinks}>
           <a href="#sobre">Sobre</a>
           <a href="#como-funciona">Como funciona</a>
           <a href="#modulos">Módulos</a>
           <a href="#resultado">Resultado</a>
 
-          <a className="btn btn-primary nav-cta" href="#formulario">
+          <a className={`${styles.btn} ${styles.btnPrimary} ${styles.navCta}`} href="#formulario">
             Falar no WhatsApp
           </a>
         </div>
@@ -37,3 +37,4 @@ const Header = () => {
 };
 
 export default Header;
+

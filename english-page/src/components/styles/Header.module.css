@@ -12,7 +12,7 @@
       border-bottom: 1px solid rgba(148, 163, 184, 0.15);
     }
 
-    .nav-inner {
+    .navInner {
       max-width: 1120px;
       margin: 0 auto;
       padding: 8px 16px;
@@ -32,7 +32,7 @@
       text-transform: uppercase;
     }
 
-    .logo-badge {
+    .logoBadge {
       width: 32px;
       height: 32px;
       border-radius: 14px;
@@ -45,7 +45,7 @@
         0 16px 35px rgba(8, 47, 73, 0.8);
     }
 
-    .nav-links {
+    .navLinks {
       display: flex;
       gap: 16px;
       align-items: center;
@@ -53,13 +53,13 @@
       color: var(--muted);
     }
 
-    .nav-links a {
+    .navLinks a {
       padding: 6px 10px;
       border-radius: 999px;
       transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
     }
 
-    .nav-links a:hover {
+    .navLinks a:hover {
       background: rgba(30, 64, 175, 0.55);
       color: var(--text);
       transform: translateY(-1px);
@@ -89,13 +89,13 @@
       white-space: nowrap;
     }
 
-    .btn-primary {
+    .btnPrimary {
       background: linear-gradient(135deg, #22d3ee, #0ea5e9, #1d4ed8);
       color: #0b1120;
       box-shadow: 0 14px 30px rgba(37, 99, 235, 0.7);
     }
 
-    .btn-primary:hover {
+    .btnPrimary:hover {
       transform: translateY(-1px);
       box-shadow: 0 18px 36px rgba(37, 99, 235, 0.9);
     }
