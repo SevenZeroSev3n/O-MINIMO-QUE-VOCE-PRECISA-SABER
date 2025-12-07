@@ -8,8 +8,11 @@ import Footer from './components/Footer.jsx';
 // paginas
 import HomePageContent from "./components/pages/HomePageContent.jsx";
 
+// ❌ REMOVA esta linha:
+// import './App.css'; 
 
-import './App.css'; 
+// ✅ ADICIONE esta linha (se precisar de estilos globais do App):
+import './App.module.css';  // ← ou simplesmente delete se não usar
 
 const App = () => {
     return (
@@ -19,10 +22,7 @@ const App = () => {
                 <Header /> 
         
                 <Routes>
-                    {/* ROTA PRINCIPAL: Carrega o design de Perfil Centralizado */}
                     <Route path="/" element={<HomePageContent />} /> 
-          
-                    {/* OUTRAS ROTAS (Pages) */}          
                 </Routes>
 
                 <Footer /> 
