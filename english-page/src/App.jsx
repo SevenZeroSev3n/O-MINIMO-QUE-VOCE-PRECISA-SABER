@@ -1,34 +1,54 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Header from './components/Header';
+import HomePageContent from './components/pages/HomePageContent';
+import Login from './components/pages/Login';
+import Dashboard from './components/pages/admin/Dashboard';
+import LeadsPage from './components/pages/admin/LeadsPage';
+import ProtectedRoute from './components/admin/ProtectedRoute';
+import './index.css';
 
-// Componentes Base
-import Header from './components/Header.jsx';
-import Footer from './components/Footer.jsx';
-
-// paginas
-import HomePageContent from "./components/pages/HomePageContent.jsx";
-
-// ❌ REMOVA esta linha:
-// import './App.css'; 
-
-// ✅ ADICIONE esta linha (se precisar de estilos globais do App):
-import './App.module.css';  // ← ou simplesmente delete se não usar
-
-const App = () => {
-    return (
-        <Router>
-            <div className="english-page">
+function App() {
+  return (
+    <Router>
+      <Routes>
+        {/* Rotas Públicas */}
+        <Route 
+          path="/" 
+          element={
+            <>
+              <Header />
+              <HomePageContent />
+            </>
+          } 
+        />
         
-                <Header /> 
-        
-                <Routes>
-                    <Route path="/" element={<HomePageContent />} /> 
-                </Routes>
+        <Route path="/login" element={<Login />} />
 
-                <Footer /> 
-            </div>
-        </Router>
-    );
-};
+        {/* Rotas Protegidas (Admin) */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/leads"
+          element={
+            <ProtectedRoute>
+              <LeadsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Rota não encontrada - redireciona para home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
+  );
+}
 
 export default App;

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import styles from '../styles/Profile.module.css'; 
+import React, { useState, useEffect } from 'react';
+import styles from '../../styles/Profile.module.css';
+
 const HomePageContent = () => {
   const [formData, setFormData] = useState({
     nome: '',
@@ -13,6 +14,30 @@ const HomePageContent = () => {
   
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [trackingData, setTrackingData] = useState({});
+
+  // ✨ Capturar UTM parameters quando a página carregar
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tracking = {
+      utm_source: urlParams.get('utm_source') || 'direct',
+      utm_medium: urlParams.get('utm_medium') || 'none',
+      utm_campaign: urlParams.get('utm_campaign') || 'none',
+      source: urlParams.get('utm_source') || 'direct'
+    };
+    
+    setTrackingData(tracking);
+    
+    // Salvar no localStorage para não perder se o usuário navegar
+    localStorage.setItem('tracking', JSON.stringify(tracking));
+    
+    console.log('📊 Tracking capturado:', tracking);
+    
+    // Mostrar para o usuário se veio de uma campanha (opcional)
+    if (tracking.utm_campaign && tracking.utm_campaign !== 'none') {
+      console.log(`🎯 Usuário veio da campanha: ${tracking.utm_campaign} via ${tracking.utm_source}`);
+    }
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -27,6 +52,11 @@ const HomePageContent = () => {
     setMessage('');
 
     try {
+      // Pegar tracking do state ou localStorage
+      const savedTracking = trackingData.utm_source 
+        ? trackingData 
+        : JSON.parse(localStorage.getItem('tracking') || '{}');
+
       const leadData = {
         name: formData.nome,
         whatsapp: formData.whatsapp,
@@ -34,8 +64,15 @@ const HomePageContent = () => {
         level: formData.nivel,
         goal: formData.objetivo,
         schedule: formData.horario,
-        message: formData.mensagem
+        message: formData.mensagem,
+        // ✨ Adicionar dados de tracking
+        source: savedTracking.source || 'direct',
+        utm_source: savedTracking.utm_source || 'direct',
+        utm_medium: savedTracking.utm_medium || 'none',
+        utm_campaign: savedTracking.utm_campaign || 'none'
       };
+
+      console.log('📤 Enviando lead com tracking:', leadData);
 
       const response = await fetch('http://localhost:3000/api/leads', {
         method: 'POST',
@@ -64,10 +101,13 @@ const HomePageContent = () => {
         mensagem: ''
       });
 
-      console.log('Lead criado:', data);
+      // Limpar tracking após envio
+      localStorage.removeItem('tracking');
+
+      console.log('✅ Lead criado com sucesso:', data);
     } catch (error) {
       setMessage('❌ Erro ao enviar. Tente novamente.');
-      console.error(error);
+      console.error('Erro ao enviar lead:', error);
     } finally {
       setLoading(false);
     }
@@ -123,8 +163,7 @@ const HomePageContent = () => {
           <div className={styles.heroSideTag}>Resposta em poucas horas</div>
           <div className={styles.heroSideTitle}>Aplicar para a próxima turma</div>
           <p className={styles.heroSideText}>
-            Preenche rapidinho e eu te respondo <strong>direto no WhatsApp</strong> com os valores,
-            horários e a melhor opção pra sua realidade.
+            Preenche rapidinho e eu te respondo <strong>direto no WhatsApp</strong>
           </p>
 
           <form onSubmit={handleSubmit} className={styles.leadForm}>
@@ -142,6 +181,7 @@ const HomePageContent = () => {
                   required
                 />
               </div>
+              
               <div className={styles.leadField}>
                 <label htmlFor="cidade" className={styles.leadLabel}>Cidade / Estado</label>
                 <input
@@ -170,8 +210,8 @@ const HomePageContent = () => {
                   onChange={handleChange}
                   required
                 />
-                <div className={styles.leadHelp}>É por aqui que vou falar com você primeiro.</div>
               </div>
+              
               <div className={styles.leadField}>
                 <label htmlFor="nivel" className={styles.leadLabel}>Seu nível de inglês</label>
                 <select 
@@ -210,8 +250,9 @@ const HomePageContent = () => {
                   <option>Outro</option>
                 </select>
               </div>
+              
               <div className={styles.leadField}>
-                <label htmlFor="horario" className={styles.leadLabel}>Melhor horário pra estudar</label>
+                <label htmlFor="horario" className={styles.leadLabel}>Melhor horário</label>
                 <select 
                   id="horario" 
                   name="horario" 
@@ -231,7 +272,9 @@ const HomePageContent = () => {
 
             <div className={styles.leadFormGrid}>
               <div className={styles.leadField}>
-                <label htmlFor="mensagem" className={styles.leadLabel}>Me conta rapidinho sua situação</label>
+                <label htmlFor="mensagem" className={styles.leadLabel}>
+                  Me conta rapidinho sua situação
+                </label>
                 <textarea
                   id="mensagem"
                   name="mensagem"
@@ -240,9 +283,6 @@ const HomePageContent = () => {
                   value={formData.mensagem}
                   onChange={handleChange}
                 ></textarea>
-                <div className={styles.leadHelp}>
-                  Pode escrever em português mesmo.
-                </div>
               </div>
             </div>
 
@@ -271,7 +311,6 @@ const HomePageContent = () => {
 
             <div className={styles.leadLegal}>
               Ao enviar, você concorda em receber contato por WhatsApp e e-mail sobre o curso.
-              Você pode parar quando quiser.
             </div>
           </form>
 
