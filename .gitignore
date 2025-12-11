@@ -7,7 +7,6 @@ node_modules
 .env.production.local
 .env.test.local
 .jwtsecret
-.env.example
 
 /generated/prisma
 
@@ -17,6 +16,9 @@ node_modules
 *.db-wal
 *.sqlite
 *.sqlite3
+
+# SQLite Browser Pro project files
+*.sqbpro
 
 # Logs
 *.log

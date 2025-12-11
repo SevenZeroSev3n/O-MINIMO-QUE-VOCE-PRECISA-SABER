@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
+import Footer from './components/Footer';
 import HomePageContent from './components/pages/HomePageContent';
 import Login from './components/pages/Login';
 import Dashboard from './components/pages/admin/Dashboard';
@@ -19,6 +20,7 @@ function App() {
             <>
               <Header />
               <HomePageContent />
+              <Footer />
             </>
           } 
         />
