@@ -621,3 +621,97 @@
     padding: 12px 8px;
   }
 }
+
+/* Source Badge */
+.sourceBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: #f0f9ff;
+  color: #0369a1;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #bae6fd;
+  white-space: nowrap;
+}
+
+.sourceBadge:hover {
+  background: #e0f2fe;
+}
+
+/* Campaign Tag */
+.tableCampaign {
+  font-size: 13px;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.campaignTag {
+  display: inline-block;
+  padding: 4px 8px;
+  background: #fef3c7;
+  color: #92400e;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid #fde68a;
+}
+
+/* Stats by Source */
+.sourceStatsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.sourceStatCard {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.sourceStatHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.sourceStatIcon {
+  font-size: 20px;
+}
+
+.sourceStatName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a202c;
+}
+
+.sourceStatValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: #3b82f6;
+  margin-bottom: 4px;
+}
+
+.sourceStatMeta {
+  font-size: 12px;
+  color: #718096;
+}
+
+.sourceStatConversion {
+  display: inline-block;
+  padding: 2px 6px;
+  background: #d1fae5;
+  color: #059669;
+  border-radius: 4px;
+  font-weight: 600;
+  margin-left: 4px;
+}

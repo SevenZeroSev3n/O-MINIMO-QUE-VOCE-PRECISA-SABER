@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { authenticatedFetch } from '../../../services/auth';
 import Sidebar from '../../admin/Sidebar';
 import StatsCard from '../../admin/StatsCard';
+import SourceStats from '../../admin/SourceStats';
 import styles from '../../../styles/Admin.module.css';
 
 function Dashboard() {
@@ -112,6 +113,9 @@ function Dashboard() {
             subtitle="Leads recebidos hoje"
           />
         </div>
+
+        {/* NOVO: Estatísticas por origem */}
+        <SourceStats />
 
         <div className={styles.dashboardSection}>
           <h2 className={styles.sectionTitle}>Últimos 7 dias</h2>

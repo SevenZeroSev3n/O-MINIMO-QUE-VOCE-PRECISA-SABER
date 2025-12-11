@@ -12,6 +12,38 @@ const LeadsTable = ({ leads, onStatusChange, onDelete, loading }) => {
     return badges[status] || badges.new;
   };
 
+  const getSourceIcon = (source) => {
+    const icons = {
+      instagram: '📸',
+      tiktok: '🎵',
+      facebook: '📘',
+      youtube: '📺',
+      google: '🔍',
+      twitter: '🐦',
+      linkedin: '💼',
+      direct: '🔗',
+      email: '📧'
+    };
+    
+    return icons[source?.toLowerCase()] || '🌐';
+  };
+
+  const getSourceLabel = (source) => {
+    const labels = {
+      instagram: 'Instagram',
+      tiktok: 'TikTok',
+      facebook: 'Facebook',
+      youtube: 'YouTube',
+      google: 'Google',
+      twitter: 'Twitter',
+      linkedin: 'LinkedIn',
+      direct: 'Direto',
+      email: 'Email'
+    };
+    
+    return labels[source?.toLowerCase()] || source || 'Desconhecido';
+  };
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('pt-BR', {
@@ -62,6 +94,8 @@ const LeadsTable = ({ leads, onStatusChange, onDelete, loading }) => {
             <th>Nome</th>
             <th>WhatsApp</th>
             <th>Cidade</th>
+            <th>Origem</th>
+            <th>Campanha</th>
             <th>Nível</th>
             <th>Objetivo</th>
             <th>Data</th>
@@ -72,6 +106,8 @@ const LeadsTable = ({ leads, onStatusChange, onDelete, loading }) => {
         <tbody>
           {leads.map((lead) => {
             const statusBadge = getStatusBadge(lead.status);
+            const sourceIcon = getSourceIcon(lead.source);
+            const sourceLabel = getSourceLabel(lead.source);
             
             return (
               <tr key={lead.id}>
@@ -88,6 +124,20 @@ const LeadsTable = ({ leads, onStatusChange, onDelete, loading }) => {
                   </a>
                 </td>
                 <td>{lead.city || '-'}</td>
+                <td>
+                  <span className={styles.sourceBadge} title={`Meio: ${lead.utm_medium || 'none'}`}>
+                    {sourceIcon} {sourceLabel}
+                  </span>
+                </td>
+                <td className={styles.tableCampaign}>
+                  {lead.utm_campaign && lead.utm_campaign !== 'none' ? (
+                    <span className={styles.campaignTag}>
+                      🎯 {lead.utm_campaign}
+                    </span>
+                  ) : (
+                    '-'
+                  )}
+                </td>
                 <td className={styles.tableLevel}>{lead.level || '-'}</td>
                 <td className={styles.tableGoal}>{lead.goal || '-'}</td>
                 <td className={styles.tableDate}>{formatDate(lead.created_at)}</td>
