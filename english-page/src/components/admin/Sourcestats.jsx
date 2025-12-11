@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { authenticatedFetch } from '../../services/auth';
 import styles from '../../styles/Admin.module.css';
+import { API_URL } from '../../config';
 
 function SourceStats() {
   const [sources, setSources] = useState([]);
@@ -13,7 +14,7 @@ function SourceStats() {
   const fetchSourceStats = async () => {
     try {
       setLoading(true);
-      const response = await authenticatedFetch('http://localhost:3000/api/admin/stats/sources');
+      const response = await authenticatedFetch(`${API_URL}/admin/stats/sources`);
       
       if (response.ok) {
         const data = await response.json();

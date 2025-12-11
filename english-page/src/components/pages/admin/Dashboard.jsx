@@ -4,6 +4,7 @@ import Sidebar from '../../admin/Sidebar';
 import StatsCard from '../../admin/StatsCard';
 import SourceStats from '../../admin/SourceStats';
 import styles from '../../../styles/Admin.module.css';
+import { API_URL } from '../../../config';
 
 function Dashboard() {
   const [stats, setStats] = useState(null);
@@ -17,7 +18,7 @@ function Dashboard() {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const response = await authenticatedFetch('http://localhost:3000/api/admin/stats');
+      const response = await authenticatedFetch(`${API_URL}/admin/stats`);
       
       if (!response.ok) {
         throw new Error('Erro ao buscar estatísticas');

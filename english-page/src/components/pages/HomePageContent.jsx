@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../../styles/Profile.module.css';
+import { API_URL } from '../../config';
 
 const HomePageContent = () => {
   const [formData, setFormData] = useState({
@@ -74,7 +75,7 @@ const HomePageContent = () => {
 
       console.log('📤 Enviando lead com tracking:', leadData);
 
-      const response = await fetch('http://localhost:3000/api/leads', {
+      const response = await fetch(`${API_URL}/leads`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

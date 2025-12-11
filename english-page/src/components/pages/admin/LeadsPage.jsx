@@ -3,6 +3,7 @@ import { authenticatedFetch } from '../../../services/auth';
 import Sidebar from '../../admin/Sidebar';
 import LeadsTable from '../../admin/LeadsTable';
 import styles from '../../../styles/Admin.module.css';
+import { API_URL } from '../../../config';
 
 function LeadsPage() {
   const [leads, setLeads] = useState([]);
@@ -25,7 +26,7 @@ function LeadsPage() {
       if (filters.status !== 'all') params.append('status', filters.status);
       if (filters.search) params.append('search', filters.search);
       
-      const url = `http://localhost:3000/api/admin/leads?${params.toString()}`;
+      const url = `${API_URL}/admin/leads?${params.toString()}`;
       const response = await authenticatedFetch(url);
       
       if (!response.ok) {
@@ -40,6 +41,53 @@ function LeadsPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+    // Exemplo: Atualizar status de lead
+const updateLeadStatus = async (leadId, newStatus) => {
+  try {
+    const response = await authenticatedFetch(
+      `${API_URL}/admin/leads/${leadId}/status`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify({ status: newStatus })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Erro ao atualizar status');
+    }
+
+    // Recarregar leads
+    fetchLeads();
+  } catch (error) {
+    console.error('Erro:', error);
+    alert('Erro ao atualizar status do lead');
+  }
+};
+
+// Exemplo: Deletar lead
+const deleteLead = async (leadId) => {
+  if (!confirm('Tem certeza que deseja deletar este lead?')) return;
+
+  try {
+    const response = await authenticatedFetch(
+      `${API_URL}/admin/leads/${leadId}`,
+      {
+        method: 'DELETE'
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Erro ao deletar lead');
+    }
+
+    // Recarregar leads
+    fetchLeads();
+  } catch (error) {
+    console.error('Erro:', error);
+    alert('Erro ao deletar lead');
+  }
   };
 
   const handleStatusChange = async (leadId, newStatus) => {

@@ -90,9 +90,7 @@ function Login() {
         </form>
 
         <div className={styles.footer}>
-          <p className={styles.hint}>
-            💡 Credenciais padrão: admin@example.com / admin123
-          </p>
+          
         </div>
       </div>
     </div>
