@@ -3,6 +3,7 @@ import { authenticatedFetch } from '../../../services/auth';
 import Sidebar from '../../admin/Sidebar';
 import LeadsTable from '../../admin/LeadsTable';
 import styles from '../../../styles/Admin.module.css';
+import { API_URL } from '../../../config';
 
 function LeadsPage() {
   const [leads, setLeads] = useState([]);
@@ -25,7 +26,7 @@ function LeadsPage() {
       if (filters.status !== 'all') params.append('status', filters.status);
       if (filters.search) params.append('search', filters.search);
       
-      const url = `http://localhost:3000/api/admin/leads?${params.toString()}`;
+      const url = `${API_URL}/admin/leads?${params.toString()}`;
       const response = await authenticatedFetch(url);
       
       if (!response.ok) {
@@ -46,7 +47,7 @@ function LeadsPage() {
 const updateLeadStatus = async (leadId, newStatus) => {
   try {
     const response = await authenticatedFetch(
-      `http://localhost:3000/api/admin/leads/${leadId}/status`,
+      `${API_URL}/admin/leads/${leadId}/status`,
       {
         method: 'PATCH',
         body: JSON.stringify({ status: newStatus })
@@ -71,7 +72,7 @@ const deleteLead = async (leadId) => {
 
   try {
     const response = await authenticatedFetch(
-      `http://localhost:3000/api/admin/leads/${leadId}`,
+      `${API_URL}/admin/leads/${leadId}`,
       {
         method: 'DELETE'
       }
