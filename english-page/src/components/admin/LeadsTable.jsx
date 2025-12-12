@@ -1,6 +1,71 @@
+/**
+ * ============================================================================
+ * LEADSTABLE.JSX - Tabela de Leads
+ * ============================================================================
+ *
+ * Componente de tabela para exibir lista de leads com ações.
+ * Usado na página de gerenciamento de leads.
+ *
+ * COLUNAS:
+ * - ID, Nome, WhatsApp (com link), Cidade
+ * - Origem (UTM source), Campanha (UTM campaign)
+ * - Nível de inglês, Objetivo
+ * - Data de criação, Status
+ * - Ações (mudar status, deletar)
+ *
+ * FEATURES:
+ * - Link direto para WhatsApp
+ * - Ícones por fonte de tráfego
+ * - Badges coloridos por status
+ * - Ciclo de status com clique
+ * - Deleção com confirmação
+ *
+ * TODO: [REFATORAÇÃO] Extrair mapeamentos para constantes
+ *       - getStatusBadge, getSourceIcon, getSourceLabel
+ *       - Criar arquivo constants/leads.js
+ *       - Reutilizar em outros componentes
+ *
+ * TODO: [UX] Adicionar tooltip com mais informações
+ *       - Mostrar mensagem do lead no hover
+ *       - Usar react-tooltip ou similar
+ *       - Link: https://react-tooltip.com/
+ *
+ * TODO: [UX] Adicionar linha expansível
+ *       - Clicar na linha para expandir detalhes
+ *       - Mostrar todos os campos do lead
+ *       - Mensagem completa, horário preferido, etc.
+ *
+ * TODO: [UX] Melhorar mudança de status
+ *       - Dropdown em vez de ciclo
+ *       - Permitir selecionar status específico
+ *       - Confirmar antes de mudar
+ *
+ * TODO: [RESPONSIVIDADE] Tornar tabela responsiva
+ *       - Scroll horizontal em mobile
+ *       - Ou converter para cards em telas pequenas
+ *
+ * TODO: [ACESSIBILIDADE] Melhorar tabela
+ *       - scope="col" nos headers
+ *       - aria-sort para colunas ordenáveis
+ *       - Feedback de ação com aria-live
+ *
+ * @component
+ * @param {Object} props
+ * @param {Array} props.leads - Lista de leads a exibir
+ * @param {Function} props.onStatusChange - Callback para mudança de status
+ * @param {Function} props.onDelete - Callback para deleção
+ * @param {boolean} props.loading - Estado de carregamento
+ * ============================================================================
+ */
+
 import React from 'react';
 import styles from '../../styles/Admin.module.css';
 
+/**
+ * Componente de tabela de leads
+ * @param {Object} props - Props do componente
+ * @returns {JSX.Element}
+ */
 const LeadsTable = ({ leads, onStatusChange, onDelete, loading }) => {
   const getStatusBadge = (status) => {
     const badges = {

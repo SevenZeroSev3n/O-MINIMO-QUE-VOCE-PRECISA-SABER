@@ -1,7 +1,82 @@
+/**
+ * ============================================================================
+ * HOMEPAGECONTENT.JSX - Landing Page Principal
+ * ============================================================================
+ *
+ * Componente principal da landing page de captura de leads.
+ * É a página mais importante do sistema - converte visitantes em leads.
+ *
+ * ESTRUTURA:
+ * - Hero section com proposta de valor e formulário de captura
+ * - Seção "Sobre" com benefícios do curso
+ * - Seção "Como funciona" com metodologia
+ * - Seção "Resultado" com expectativas
+ * - CTA final
+ *
+ * FEATURES:
+ * - Formulário de captura com validação
+ * - UTM tracking para análise de campanhas
+ * - Persistência de UTM no localStorage
+ * - Estados de loading e feedback visual
+ *
+ * TODO: [CONVERSÃO] Adicionar A/B testing
+ *       - Testar diferentes headlines e CTAs
+ *       - Usar Google Optimize ou Optimizely
+ *       - Link: https://optimize.google.com/
+ *
+ * TODO: [FORMULÁRIO] Extrair para componente separado
+ *       - Criar componente LeadForm reutilizável
+ *       - Melhor organização e testabilidade
+ *       - Props: onSuccess, onError, fields
+ *
+ * TODO: [VALIDAÇÃO] Adicionar validação em tempo real
+ *       - Usar react-hook-form para melhor performance
+ *       - Integrar com Zod para validação consistente com backend
+ *       - Link: https://react-hook-form.com/
+ *
+ * TODO: [UX] Adicionar máscara de input para WhatsApp
+ *       - Formatar automaticamente o número
+ *       - Usar react-input-mask ou similar
+ *       - Link: https://github.com/sanniassin/react-input-mask
+ *
+ * TODO: [ANALYTICS] Implementar eventos de conversão
+ *       - Google Analytics 4: form_start, form_submit, form_success
+ *       - Facebook Pixel: Lead event
+ *       - Link: https://developers.google.com/analytics/devguides/collection/ga4
+ *
+ * TODO: [PERFORMANCE] Implementar lazy loading de seções
+ *       - Carregar seções abaixo do fold sob demanda
+ *       - Usar Intersection Observer
+ *       - Reduzir tempo de carregamento inicial
+ *
+ * TODO: [SEO] Adicionar schema markup
+ *       - Structured data para Course
+ *       - JSON-LD no head
+ *       - Link: https://schema.org/Course
+ *
+ * TODO: [ACESSIBILIDADE] Melhorar formulário
+ *       - aria-describedby para mensagens de erro
+ *       - aria-invalid para campos com erro
+ *       - Focus management após submit
+ *
+ * TODO: [REFATORAÇÃO] Componentizar seções
+ *       - Extrair HeroSection, AboutSection, etc.
+ *       - Arquivo está muito grande (+550 linhas)
+ *       - Melhor manutenibilidade
+ *
+ * @component
+ * ============================================================================
+ */
+
 import React, { useState, useEffect } from 'react';
 import styles from '../../styles/Profile.module.css';
 import { API_URL } from '../../config';
 
+/**
+ * Componente da landing page principal
+ * Responsável pela captura de leads e apresentação do curso
+ * @returns {JSX.Element}
+ */
 const HomePageContent = () => {
   const [formData, setFormData] = useState({
     nome: '',

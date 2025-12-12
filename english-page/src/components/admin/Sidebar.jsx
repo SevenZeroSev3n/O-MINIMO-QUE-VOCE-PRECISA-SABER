@@ -1,8 +1,50 @@
+/**
+ * ============================================================================
+ * SIDEBAR.JSX - Menu Lateral do Admin
+ * ============================================================================
+ *
+ * Componente de navegação lateral para a área administrativa.
+ * Exibe logo, info do usuário, links de navegação e logout.
+ *
+ * FEATURES:
+ * - Logo e título do painel
+ * - Info do usuário logado (nome e role)
+ * - Links de navegação com estado ativo
+ * - Link externo para ver o site
+ * - Botão de logout com confirmação
+ *
+ * TODO: [UX] Adicionar collapse/expand
+ *       - Botão para minimizar sidebar
+ *       - Mostrar apenas ícones quando colapsado
+ *       - Salvar preferência no localStorage
+ *
+ * TODO: [PERFORMANCE] Evitar chamada repetida a getCurrentUser
+ *       - Usar React Context para compartilhar dados do usuário
+ *       - Sidebar está chamando getCurrentUser a cada render
+ *       - Centralizar em AuthContext
+ *
+ * TODO: [UX] Adicionar indicador de notificações
+ *       - Badge com número de leads novos
+ *       - Atualizar em tempo real
+ *
+ * TODO: [ACESSIBILIDADE] Melhorar navegação
+ *       - Adicionar aria-label na nav
+ *       - aria-current para link ativo
+ *       - Suporte a navegação por teclado
+ *
+ * @component
+ * ============================================================================
+ */
+
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { logout, getCurrentUser } from '../../services/auth';
 import styles from '../../styles/Admin.module.css';
 
+/**
+ * Componente de sidebar para navegação admin
+ * @returns {JSX.Element}
+ */
 const Sidebar = () => {
   const location = useLocation();
   const [user, setUser] = useState(null);

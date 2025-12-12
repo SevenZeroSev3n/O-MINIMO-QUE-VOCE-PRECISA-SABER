@@ -1,3 +1,60 @@
+/**
+ * ============================================================================
+ * LEADSPAGE.JSX - Página de Gerenciamento de Leads
+ * ============================================================================
+ *
+ * Interface completa para visualizar, filtrar e gerenciar leads.
+ * Permite atualizar status e deletar leads.
+ *
+ * FEATURES:
+ * - Tabela de leads com todas as informações
+ * - Filtros por status (new, contacted, converted)
+ * - Busca por nome, telefone ou cidade
+ * - Atualização de status com clique
+ * - Deleção de leads com confirmação
+ * - Link direto para WhatsApp
+ *
+ * TODO: [REFATORAÇÃO] Remover funções duplicadas
+ *       - updateLeadStatus e handleStatusChange fazem a mesma coisa
+ *       - deleteLead e handleDelete são duplicados
+ *       - Manter apenas uma implementação
+ *
+ * TODO: [BUG] Usar API_URL em vez de hardcoded localhost
+ *       - Linhas 96 e 119 usam localhost:3000 hardcoded
+ *       - Substituir por ${API_URL}
+ *
+ * TODO: [UX] Implementar paginação
+ *       - Atualmente carrega todos os leads
+ *       - Adicionar paginação server-side
+ *       - Mostrar 20 leads por página
+ *
+ * TODO: [UX] Adicionar ordenação nas colunas
+ *       - Clicar no header para ordenar
+ *       - Suportar ASC/DESC
+ *       - Ordenar por data, nome, status, etc.
+ *
+ * TODO: [UX] Adicionar seleção múltipla
+ *       - Checkboxes para selecionar leads
+ *       - Bulk actions: deletar, atualizar status
+ *
+ * TODO: [UX] Adicionar modal de detalhes do lead
+ *       - Ver todas as informações
+ *       - Histórico de mudanças de status
+ *       - Notas/comentários
+ *
+ * TODO: [EXPORTAÇÃO] Adicionar exportar para CSV/Excel
+ *       - Exportar leads filtrados
+ *       - Usar xlsx ou papaparse
+ *       - Link: https://github.com/SheetJS/sheetjs
+ *
+ * TODO: [PERFORMANCE] Implementar debounce na busca
+ *       - Evitar requisições a cada tecla
+ *       - Usar lodash.debounce ou useDebouncedValue
+ *
+ * @component
+ * ============================================================================
+ */
+
 import React, { useState, useEffect } from 'react';
 import { authenticatedFetch } from '../../../services/auth';
 import Sidebar from '../../admin/Sidebar';
@@ -5,6 +62,10 @@ import LeadsTable from '../../admin/LeadsTable';
 import styles from '../../../styles/Admin.module.css';
 import { API_URL } from '../../../config';
 
+/**
+ * Componente da página de gerenciamento de leads
+ * @returns {JSX.Element}
+ */
 function LeadsPage() {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);

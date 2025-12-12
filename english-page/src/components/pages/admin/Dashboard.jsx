@@ -1,3 +1,54 @@
+/**
+ * ============================================================================
+ * DASHBOARD.JSX - Painel Administrativo Principal
+ * ============================================================================
+ *
+ * Dashboard com visão geral das métricas e estatísticas de leads.
+ * Primeira página que o admin vê após login.
+ *
+ * MÉTRICAS EXIBIDAS:
+ * - Total de leads (all time)
+ * - Leads por status (new, contacted, converted)
+ * - Leads de hoje
+ * - Gráfico dos últimos 7 dias
+ * - Estatísticas por origem (UTM)
+ *
+ * FEATURES:
+ * - Cards de estatísticas coloridos
+ * - Gráfico de barras simples
+ * - Links rápidos para ações comuns
+ * - Estatísticas por fonte de tráfego
+ *
+ * TODO: [GRÁFICOS] Implementar gráficos mais robustos
+ *       - Usar Chart.js ou Recharts
+ *       - Gráfico de linha para tendência
+ *       - Gráfico de pizza para distribuição de status
+ *       - Link: https://recharts.org/
+ *
+ * TODO: [TEMPO REAL] Adicionar atualização automática
+ *       - Polling a cada 30 segundos
+ *       - Ou WebSockets para atualizações em tempo real
+ *       - Mostrar indicador de última atualização
+ *
+ * TODO: [MÉTRICAS] Adicionar mais KPIs
+ *       - Taxa de conversão (converted/total)
+ *       - Tempo médio para conversão
+ *       - Leads por dia da semana
+ *       - Comparação com período anterior
+ *
+ * TODO: [EXPORTAÇÃO] Adicionar botão de exportar relatório
+ *       - PDF com gráficos e métricas
+ *       - Usar jspdf ou react-pdf
+ *       - Link: https://github.com/parallax/jsPDF
+ *
+ * TODO: [FILTROS] Adicionar seletor de período
+ *       - Hoje, últimos 7 dias, 30 dias, custom
+ *       - Usar date picker
+ *
+ * @component
+ * ============================================================================
+ */
+
 import React, { useState, useEffect } from 'react';
 import { authenticatedFetch } from '../../../services/auth';
 import Sidebar from '../../admin/Sidebar';
@@ -6,6 +57,10 @@ import SourceStats from '../../admin/SourceStats';
 import styles from '../../../styles/Admin.module.css';
 import { API_URL } from '../../../config';
 
+/**
+ * Componente do dashboard administrativo
+ * @returns {JSX.Element}
+ */
 function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);

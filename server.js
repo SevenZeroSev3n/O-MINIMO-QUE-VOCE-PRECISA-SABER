@@ -1,3 +1,70 @@
+/**
+ * ============================================================================
+ * SERVER.JS - API Backend Principal
+ * ============================================================================
+ *
+ * Servidor Express que fornece a API REST para o sistema de captura de leads
+ * do curso "O Mínimo que Você Precisa pra se Virar nos EUA".
+ *
+ * ARQUITETURA:
+ * - Framework: Express 5.x
+ * - Database: SQLite (better-sqlite3) para persistência local
+ * - Auth: JWT para autenticação stateless
+ * - Validação: Zod para schema validation
+ * - Logging: Winston para logs estruturados
+ *
+ * ENDPOINTS PÚBLICOS:
+ * - GET  /                    - Health check
+ * - GET  /api/courses         - Lista cursos ativos
+ * - POST /api/leads           - Criação de leads (rate limited)
+ * - GET  /api/csrf-token      - Obter token CSRF
+ *
+ * ENDPOINTS DE AUTH:
+ * - POST /api/auth/login      - Login (rate limited)
+ * - GET  /api/auth/me         - Dados do usuário atual
+ * - POST /api/auth/logout     - Logout
+ *
+ * ENDPOINTS ADMIN (protegidos):
+ * - GET    /api/admin/leads          - Listar leads
+ * - GET    /api/admin/stats          - Estatísticas
+ * - GET    /api/admin/stats/sources  - Stats por origem
+ * - PATCH  /api/admin/leads/:id/status - Atualizar status
+ * - DELETE /api/admin/leads/:id      - Deletar lead
+ *
+ * @author SevenZeroSev3n
+ * @version 1.0.0
+ *
+ * TODO: [ARQUITETURA] Considerar migração para PostgreSQL em produção
+ *       - SQLite é ótimo para desenvolvimento mas tem limitações de concorrência
+ *       - Biblioteca recomendada: pg (node-postgres) ou Prisma ORM
+ *       - Link: https://www.prisma.io/ ou https://node-postgres.com/
+ *
+ * TODO: [PERFORMANCE] Implementar caching com Redis para endpoints de leitura
+ *       - Reduzir carga no banco de dados
+ *       - Biblioteca: ioredis (https://github.com/redis/ioredis)
+ *       - Cachear: /api/courses, /api/admin/stats
+ *
+ * TODO: [SEGURANÇA] Adicionar Helmet.js para headers de segurança HTTP
+ *       - Já está no package.json, mas não está sendo usado
+ *       - Adicionar: app.use(helmet())
+ *       - Link: https://helmetjs.github.io/
+ *
+ * TODO: [MONITORAMENTO] Adicionar health checks mais robustos
+ *       - Verificar conexão com banco de dados
+ *       - Verificar espaço em disco para logs
+ *       - Biblioteca: @godaddy/terminus (https://github.com/godaddy/terminus)
+ *
+ * TODO: [DOCUMENTAÇÃO] Adicionar Swagger/OpenAPI para documentação da API
+ *       - Biblioteca: swagger-jsdoc + swagger-ui-express
+ *       - Link: https://swagger.io/tools/swagger-ui/
+ *
+ * TODO: [TESTES] Aumentar cobertura de testes
+ *       - Adicionar testes de integração para todos os endpoints
+ *       - Usar supertest para testes de API
+ *       - Meta: 80% de cobertura
+ * ============================================================================
+ */
+
 import express from 'express';
 import { config } from 'dotenv';
 import Database from 'better-sqlite3';
@@ -11,7 +78,10 @@ import winston from 'winston';
 import csrf from 'csurf';
 import crypto from 'crypto';
 
-// Load environment variables
+/**
+ * Carrega variáveis de ambiente do arquivo .env
+ * Deve ser chamado antes de acessar process.env
+ */
 config();
 
 const app = express();
@@ -36,9 +106,23 @@ if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
 }
 
 // ========================================
-// LOGGER COM WINSTON (#14)
+// LOGGER COM WINSTON
 // ========================================
-
+/**
+ * Configuração do sistema de logging com Winston
+ * - Logs são salvos em arquivos separados por nível
+ * - Em desenvolvimento, também exibe no console com cores
+ *
+ * TODO: [LOGGING] Implementar rotação de logs
+ *       - Usar winston-daily-rotate-file para logs rotativos
+ *       - Configurar retenção de logs (ex: 14 dias)
+ *       - Link: https://github.com/winstonjs/winston-daily-rotate-file
+ *
+ * TODO: [OBSERVABILIDADE] Adicionar tracing distribuído
+ *       - Integrar com OpenTelemetry para tracing
+ *       - Correlacionar logs com traces
+ *       - Link: https://opentelemetry.io/docs/js/
+ */
 const logger = winston.createLogger({
   level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
   format: winston.format.combine(
@@ -101,8 +185,23 @@ const csrfProtection = csrf({
 });
 
 // ========================================
-// RATE LIMITING (#4)
+// RATE LIMITING
 // ========================================
+/**
+ * Configuração de rate limiting para proteção contra abusos
+ * - Login: Previne ataques de força bruta
+ * - Leads: Previne spam no formulário de captura
+ *
+ * TODO: [RATE LIMITING] Implementar rate limiting distribuído com Redis
+ *       - O rate limiting atual é in-memory e não funciona em cluster
+ *       - Usar rate-limit-redis para ambientes com múltiplas instâncias
+ *       - Link: https://github.com/express-rate-limit/rate-limit-redis
+ *
+ * TODO: [SEGURANÇA] Adicionar rate limiting global
+ *       - Limitar requisições por IP para todos os endpoints
+ *       - Sugestão: 100 req/min por IP
+ *       - Ajuda a prevenir DDoS básico
+ */
 
 // Rate limiter para login (anti brute-force)
 const loginLimiter = rateLimit({
@@ -131,10 +230,28 @@ const leadsLimiter = rateLimit({
 });
 
 // ========================================
-// SCHEMAS DE VALIDAÇÃO COM ZOD (#9 e #11)
+// SCHEMAS DE VALIDAÇÃO COM ZOD
 // ========================================
+/**
+ * Schemas de validação usando Zod para garantir integridade dos dados
+ * - Validação de entrada em todos os endpoints que recebem dados
+ * - Mensagens de erro em português para melhor UX
+ *
+ * TODO: [VALIDAÇÃO] Criar arquivo separado para schemas
+ *       - Mover schemas para src/schemas/ ou src/validators/
+ *       - Facilita reutilização e manutenção
+ *       - Exportar tipos TypeScript dos schemas com z.infer<>
+ *
+ * TODO: [VALIDAÇÃO] Adicionar validação de WhatsApp mais robusta
+ *       - Usar libphonenumber-js para validação internacional
+ *       - Normalizar formato do número
+ *       - Link: https://github.com/catamphetamine/libphonenumber-js
+ */
 
-// Schema de validação de senha forte (#11)
+/**
+ * Schema de validação de senha forte
+ * Requisitos: 12+ chars, maiúscula, minúscula, número, especial
+ */
 const passwordSchema = z.string()
   .min(12, 'Senha deve ter pelo menos 12 caracteres')
   .regex(/[A-Z]/, 'Senha deve conter pelo menos uma letra maiúscula')
@@ -177,6 +294,32 @@ const leadStatusSchema = z.object({
 // ========================================
 // DATABASE SETUP
 // ========================================
+/**
+ * Configuração do banco de dados SQLite
+ * - Usa better-sqlite3 para operações síncronas e performáticas
+ * - Cria tabelas se não existirem
+ * - Adiciona colunas de migração dinamicamente
+ *
+ * TODO: [DATABASE] Implementar sistema de migrations
+ *       - Usar biblioteca como umzug ou knex para migrations
+ *       - Versionamento do schema do banco
+ *       - Link: https://github.com/sequelize/umzug
+ *
+ * TODO: [DATABASE] Adicionar índices para melhorar performance
+ *       - CREATE INDEX idx_leads_status ON leads(status)
+ *       - CREATE INDEX idx_leads_created_at ON leads(created_at)
+ *       - CREATE INDEX idx_leads_source ON leads(source)
+ *
+ * TODO: [DATABASE] Implementar soft delete para leads
+ *       - Adicionar coluna deleted_at
+ *       - Manter histórico de leads deletados
+ *       - Importante para auditoria e compliance
+ *
+ * TODO: [BACKUP] Implementar backup automático do banco
+ *       - Usar node-schedule para agendamento
+ *       - Backup diário para S3 ou similar
+ *       - Link: https://github.com/node-schedule/node-schedule
+ */
 
 const db = new Database('dev.db');
 
@@ -332,7 +475,34 @@ if (courseCount.count === 0) {
 // ========================================
 // MIDDLEWARE DE AUTENTICAÇÃO
 // ========================================
+/**
+ * Middlewares para controle de acesso às rotas protegidas
+ * - authMiddleware: Verifica se o usuário está autenticado via JWT
+ * - adminMiddleware: Verifica se o usuário tem role 'admin'
+ *
+ * TODO: [AUTH] Implementar refresh tokens
+ *       - Tokens de acesso com expiração curta (15min)
+ *       - Refresh tokens com expiração longa (7 dias)
+ *       - Endpoint /api/auth/refresh para renovar tokens
+ *       - Armazenar refresh tokens no banco com possibilidade de revogação
+ *
+ * TODO: [AUTH] Adicionar suporte a OAuth 2.0
+ *       - Login com Google, Facebook, etc.
+ *       - Usar passport.js para estratégias de auth
+ *       - Link: https://www.passportjs.org/
+ *
+ * TODO: [AUTH] Implementar logout com blacklist de tokens
+ *       - Manter lista de tokens revogados em Redis
+ *       - Verificar blacklist no authMiddleware
+ */
 
+/**
+ * Middleware de autenticação
+ * Verifica token JWT no header Authorization ou cookie
+ * @param {Request} req - Express request
+ * @param {Response} res - Express response
+ * @param {NextFunction} next - Próximo middleware
+ */
 const authMiddleware = (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(' ')[1] || req.cookies.token;
@@ -503,7 +673,32 @@ app.get('/api/courses', (req, res) => {
   }
 });
 
-// Create lead (public) - COM VALIDAÇÃO (#9) e RATE LIMITING (#4)
+/**
+ * POST /api/leads - Criar novo lead (público)
+ *
+ * Endpoint principal de captura de leads da landing page.
+ * - Validação de dados com Zod
+ * - Rate limiting para prevenir spam
+ * - Tracking de UTM para análise de campanhas
+ * - Webhook opcional para integração com Make.com/Zapier
+ *
+ * TODO: [LEADS] Adicionar verificação de duplicatas
+ *       - Verificar se já existe lead com mesmo WhatsApp
+ *       - Opção de atualizar dados existentes ou rejeitar
+ *
+ * TODO: [LEADS] Implementar fila de processamento para webhooks
+ *       - Usar Bull ou BullMQ para filas
+ *       - Retry automático em caso de falha
+ *       - Link: https://github.com/taskforcesh/bullmq
+ *
+ * TODO: [INTEGRAÇÃO] Adicionar integração direta com WhatsApp Business API
+ *       - Enviar mensagem automática de boas-vindas
+ *       - Link: https://developers.facebook.com/docs/whatsapp
+ *
+ * TODO: [ANALYTICS] Integrar com Google Analytics 4
+ *       - Enviar evento de conversão via Measurement Protocol
+ *       - Link: https://developers.google.com/analytics/devguides/collection/protocol/ga4
+ */
 app.post('/api/leads', leadsLimiter, async (req, res) => {
   try {
     // Validação com Zod (#9)
@@ -638,10 +833,39 @@ app.post('/api/leads', leadsLimiter, async (req, res) => {
 });
 
 // ========================================
-// ROTAS ADMIN (PROTEGIDAS) - COM CSRF (#8)
+// ROTAS ADMIN (PROTEGIDAS)
 // ========================================
+/**
+ * Rotas administrativas para gerenciamento de leads
+ * - Requerem autenticação JWT
+ * - Requerem role 'admin'
+ * - Operações de escrita requerem token CSRF
+ *
+ * TODO: [ADMIN] Implementar exportação de leads
+ *       - Exportar para CSV/Excel
+ *       - Biblioteca: exceljs ou json2csv
+ *       - Link: https://github.com/exceljs/exceljs
+ *
+ * TODO: [ADMIN] Adicionar filtros avançados de leads
+ *       - Filtro por data (range)
+ *       - Filtro por UTM source/campaign
+ *       - Filtro por cidade
+ *
+ * TODO: [ADMIN] Implementar bulk actions
+ *       - Atualizar status de múltiplos leads
+ *       - Deletar múltiplos leads
+ *       - Exportar selecionados
+ *
+ * TODO: [AUDITORIA] Adicionar log de ações administrativas
+ *       - Registrar quem fez o quê e quando
+ *       - Tabela audit_logs no banco
+ *       - Campos: user_id, action, entity, entity_id, old_value, new_value, timestamp
+ */
 
-// Get all leads (admin only)
+/**
+ * GET /api/admin/leads - Listar todos os leads
+ * Query params: status, search, limit, offset
+ */
 app.get('/api/admin/leads', authMiddleware, adminMiddleware, (req, res) => {
   try {
     const { status, search, limit = 50, offset = 0 } = req.query;

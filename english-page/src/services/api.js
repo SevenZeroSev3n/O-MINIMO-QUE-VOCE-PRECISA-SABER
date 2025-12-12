@@ -1,8 +1,36 @@
+/**
+ * ============================================================================
+ * API.JS - Serviço de API (Alternativo)
+ * ============================================================================
+ *
+ * Módulo alternativo para requisições à API.
+ * NOTA: Este arquivo duplica funcionalidades do auth.js
+ *
+ * TODO: [REFATORAÇÃO] Unificar com auth.js ou remover
+ *       - Este arquivo contém código duplicado
+ *       - Manter apenas um módulo para chamadas de API
+ *       - Sugestão: manter auth.js e remover este arquivo
+ *       - Ou criar estrutura: api/auth.js, api/leads.js, api/client.js
+ *
+ * @module services/api
+ * @deprecated Usar services/auth.js para requisições autenticadas
+ * ============================================================================
+ */
+
 import { API_URL } from '../config';
 
+/**
+ * Cache do token CSRF
+ * @type {string|null}
+ * @deprecated Usar getCsrfToken de services/auth.js
+ */
 let csrfToken = null;
 
-// Função para obter CSRF token
+/**
+ * Obtém token CSRF do backend
+ * @returns {Promise<string|null>} Token CSRF
+ * @deprecated Usar getCsrfToken de services/auth.js
+ */
 export const getCsrfToken = async () => {
   if (csrfToken) return csrfToken;
   
