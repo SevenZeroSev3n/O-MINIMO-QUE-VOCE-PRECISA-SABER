@@ -8,7 +8,14 @@
     "dev": "node server.js",
     "dev:backend": "nodemon server.js",
     "dev:frontend": "cd english-page && npm run dev",
-    "dev:all": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\""
+    "dev:all": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "test": "node --test tests/*.test.js",
+    "test:watch": "node --test --watch tests/*.test.js",
+    "test:all": "npm test && cd english-page && npm test",
+    "test:panel": "node scripts/test-runner.js",
+    "test:panel:verbose": "node scripts/test-runner.js --verbose",
+    "test:frontend": "node scripts/test-runner.js --frontend",
+    "test:backend": "node scripts/test-runner.js --backend"
   },
   "repository": {
     "type": "git",
@@ -36,6 +43,7 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.11",
+    "supertest": "^7.0.0"
   }
 }

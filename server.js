@@ -879,3 +879,6 @@ process.on('SIGINT', () => {
   console.log('\n👋 Database closed. Server stopped.');
   process.exit(0);
 });
+
+// Export for testing
+export { app, db };
