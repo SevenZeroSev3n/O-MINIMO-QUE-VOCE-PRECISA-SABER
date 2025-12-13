@@ -1,44 +1,27 @@
-import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { isAuthenticated, getCurrentUser } from '../../services/auth';
+import { useAuth } from '../../context/AuthContext'; // Importa o hook
 
 const ProtectedRoute = ({ children, requiredRole = 'user' }) => {
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState(false);
+  // Agora pega os dados diretamente do context!
+  // Não precisa mais de useState, useEffect, getCurrentUser...
+  const { user, loading, isAuthenticated } = useAuth();
 
-  useEffect(() => {
-    const validateAuth = async () => {
-      if (!isAuthenticated()) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const userData = await getCurrentUser();
-        setUser(userData);
-      } catch (err) {
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    validateAuth();
-  }, []);
-
+  // Se ainda está carregando, mostra loading
   if (loading) {
     return <div>Carregando...</div>;
   }
 
-  if (!isAuthenticated() || error) {
+  // Se não está autenticado, redireciona para login
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
+  // Se precisa ser admin mas não é, redireciona para home
   if (requiredRole === 'admin' && user?.role !== 'admin') {
     return <Navigate to="/" replace />;
   }
 
+  // Se passou todas as verificações, renderiza o conteúdo
   return children;
 };
 

@@ -1,5 +1,7 @@
 import React from 'react';
 import styles from '../../styles/Admin.module.css';
+import { getSourceIcon, getSourceLabel } from '../../constants/sources';
+
 
 const LeadsTable = ({ leads, onStatusChange, onDelete, loading }) => {
   const getStatusBadge = (status) => {
@@ -10,38 +12,6 @@ const LeadsTable = ({ leads, onStatusChange, onDelete, loading }) => {
     };
     
     return badges[status] || badges.new;
-  };
-
-  const getSourceIcon = (source) => {
-    const icons = {
-      instagram: '📸',
-      tiktok: '🎵',
-      facebook: '📘',
-      youtube: '📺',
-      google: '🔍',
-      twitter: '🐦',
-      linkedin: '💼',
-      direct: '🔗',
-      email: '📧'
-    };
-    
-    return icons[source?.toLowerCase()] || '🌐';
-  };
-
-  const getSourceLabel = (source) => {
-    const labels = {
-      instagram: 'Instagram',
-      tiktok: 'TikTok',
-      facebook: 'Facebook',
-      youtube: 'YouTube',
-      google: 'Google',
-      twitter: 'Twitter',
-      linkedin: 'LinkedIn',
-      direct: 'Direto',
-      email: 'Email'
-    };
-    
-    return labels[source?.toLowerCase()] || source || 'Desconhecido';
   };
 
   const formatDate = (dateString) => {

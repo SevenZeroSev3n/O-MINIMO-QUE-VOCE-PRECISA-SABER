@@ -43,57 +43,11 @@ function LeadsPage() {
     }
   };
 
-    // Exemplo: Atualizar status de lead
-const updateLeadStatus = async (leadId, newStatus) => {
-  try {
-    const response = await authenticatedFetch(
-      `${API_URL}/admin/leads/${leadId}/status`,
-      {
-        method: 'PATCH',
-        body: JSON.stringify({ status: newStatus })
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error('Erro ao atualizar status');
-    }
-
-    // Recarregar leads
-    fetchLeads();
-  } catch (error) {
-    console.error('Erro:', error);
-    alert('Erro ao atualizar status do lead');
-  }
-};
-
-// Exemplo: Deletar lead
-const deleteLead = async (leadId) => {
-  if (!confirm('Tem certeza que deseja deletar este lead?')) return;
-
-  try {
-    const response = await authenticatedFetch(
-      `${API_URL}/admin/leads/${leadId}`,
-      {
-        method: 'DELETE'
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error('Erro ao deletar lead');
-    }
-
-    // Recarregar leads
-    fetchLeads();
-  } catch (error) {
-    console.error('Erro:', error);
-    alert('Erro ao deletar lead');
-  }
-  };
-
+  
   const handleStatusChange = async (leadId, newStatus) => {
     try {
       const response = await authenticatedFetch(
-        `http://localhost:3000/api/admin/leads/${leadId}/status`,
+        `${API_URL}/admin/leads/${leadId}/status`,
         {
           method: 'PATCH',
           body: JSON.stringify({ status: newStatus })
@@ -116,7 +70,7 @@ const deleteLead = async (leadId) => {
   const handleDelete = async (leadId) => {
     try {
       const response = await authenticatedFetch(
-        `http://localhost:3000/api/admin/leads/${leadId}`,
+        `${API_URL}/admin/leads/${leadId}`,
         { method: 'DELETE' }
       );
 

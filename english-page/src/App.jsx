@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext'; // Importa o Provider
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePageContent from './components/pages/HomePageContent';
@@ -11,45 +12,48 @@ import './index.css';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Rotas Públicas */}
-        <Route 
-          path="/" 
-          element={
-            <>
-              <Header />
-              <HomePageContent />
-              <Footer />
-            </>
-          } 
-        />
-        
-        <Route path="/login" element={<Login />} />
+    // AuthProvider ENVOLVE tudo - assim qualquer componente pode acessar
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Rotas Publicas */}
+          <Route
+            path="/"
+            element={
+              <>
+                <Header />
+                <HomePageContent />
+                <Footer />
+              </>
+            }
+          />
 
-        {/* Rotas Protegidas (Admin) */}
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+          <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/admin/leads"
-          element={
-            <ProtectedRoute>
-              <LeadsPage />
-            </ProtectedRoute>
-          }
-        />
+          {/* Rotas Protegidas (Admin) */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Rota não encontrada - redireciona para home */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
+          <Route
+            path="/admin/leads"
+            element={
+              <ProtectedRoute>
+                <LeadsPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Rota nao encontrada */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

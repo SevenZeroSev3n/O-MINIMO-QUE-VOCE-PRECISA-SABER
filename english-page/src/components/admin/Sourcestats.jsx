@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { authenticatedFetch } from '../../services/auth';
 import styles from '../../styles/Admin.module.css';
 import { API_URL } from '../../config';
+import { getSourceIcon, getSourceLabel } from '../../constants/sources';
 
 function SourceStats() {
   const [sources, setSources] = useState([]);
@@ -25,38 +26,6 @@ function SourceStats() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const getSourceIcon = (source) => {
-    const icons = {
-      instagram: '📸',
-      tiktok: '🎵',
-      facebook: '📘',
-      youtube: '📺',
-      google: '🔍',
-      twitter: '🐦',
-      linkedin: '💼',
-      direct: '🔗',
-      email: '📧'
-    };
-    
-    return icons[source?.toLowerCase()] || '🌐';
-  };
-
-  const getSourceLabel = (source) => {
-    const labels = {
-      instagram: 'Instagram',
-      tiktok: 'TikTok',
-      facebook: 'Facebook',
-      youtube: 'YouTube',
-      google: 'Google',
-      twitter: 'Twitter',
-      linkedin: 'LinkedIn',
-      direct: 'Direto',
-      email: 'Email'
-    };
-    
-    return labels[source?.toLowerCase()] || source || 'Desconhecido';
   };
 
   const calculateConversionRate = (converted, total) => {
